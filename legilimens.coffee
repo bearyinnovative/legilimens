@@ -30,14 +30,14 @@ getClosedPullRequestsAfter = (time) ->
         new Date(pullRequest.merged_at) > time
       printPullRequestsReport(pullRequests)
 
-getLastedReleaseTime = (callback) ->
+getLastedReleaseTime = new Promise (resolve, reject) ->
   callGithubAPI (repoUrl + LATEST_RELEASE_PATH),  (error, response, body) ->
     if (!error and response.statusCode isnt 200)
-      console.log error, body
+      reject error
     else
       lastedReleaseTime = new Date(JSON.parse(body).created_at)
       console.log lastedReleaseTime
-      callback(lastedReleaseTime)
+      resolve(lastedReleaseTime)
 
 printPullRequestsReport = (pullRequests) ->
   index = 1
@@ -45,4 +45,4 @@ printPullRequestsReport = (pullRequests) ->
     console.log "#{index}. #{pullRequest.title} by @#{pullRequest.user.login}"
     index++
 
-getLastedReleaseTime(getClosedPullRequestsAfter)
+getLastedReleaseTime.then getClosedPullRequestsAfter
