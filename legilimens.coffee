@@ -11,7 +11,7 @@ repoName = 'reponame'
 
 repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoOwner}/#{repoName}"
 
-callGithubAPI = (url, callback = (error, response, body) -> {}) ->
+callGithubAPI = ({url, callback}) ->
   request
     url: url
     headers:
@@ -21,26 +21,31 @@ callGithubAPI = (url, callback = (error, response, body) -> {}) ->
       password: password
   , callback
 
-getClosedPullRequestsAfter = (time) ->
-  callGithubAPI (repoUrl + RECENT_CLOSED_PR_PATH), (error, response, body) ->
-    if (!error and response.statusCode isnt 200)
-      console.log error, body
-    else
-      pullRequests = JSON.parse(body).filter (pullRequest) ->
-        new Date(pullRequest.merged_at) > time
-      if pullRequests.length
-        printPullRequestsReport(pullRequests)
-      else
-        console.log 'No new pull requests be merged.'
-
 getLastedReleaseTime = new Promise (resolve, reject) ->
-  callGithubAPI (repoUrl + LATEST_RELEASE_PATH),  (error, response, body) ->
-    if (!error and response.statusCode isnt 200)
-      reject error
-    else
-      lastedReleaseTime = new Date(JSON.parse(body).created_at)
-      console.log "Last release time is #{lastedReleaseTime.toLocaleTimeString()} #{lastedReleaseTime.toLocaleDateString()}"
-      resolve(lastedReleaseTime)
+  callGithubAPI
+    url: repoUrl + LATEST_RELEASE_PATH
+    callback: (error, response, body) ->
+      if (!error and response.statusCode isnt 200)
+        console.log error, body
+        reject error
+      else
+        lastedReleaseTime = new Date(JSON.parse(body).created_at)
+        console.log "Last release time is #{lastedReleaseTime.toLocaleTimeString()} #{lastedReleaseTime.toLocaleDateString()}"
+        resolve(lastedReleaseTime)
+
+getClosedPullRequestsAfter = (time) ->
+  callGithubAPI
+    url: repoUrl + RECENT_CLOSED_PR_PATH
+    callback: (error, response, body) ->
+      if (!error and response.statusCode isnt 200)
+        console.log error, body
+      else
+        pullRequests = JSON.parse(body).filter (pullRequest) ->
+          new Date(pullRequest.merged_at) > time
+        if pullRequests.length
+          printPullRequestsReport(pullRequests)
+        else
+          console.log 'No new pull requests be merged.'
 
 printPullRequestsReport = (pullRequests) ->
   index = 1
@@ -48,4 +53,5 @@ printPullRequestsReport = (pullRequests) ->
     console.log "#{index}. #{pullRequest.title} by @#{pullRequest.user.login}"
     index++
 
-getLastedReleaseTime.then getClosedPullRequestsAfter
+getLastedReleaseTime.then (lastedReleaseTime) ->
+  getClosedPullRequestsAfter(lastedReleaseTime)
