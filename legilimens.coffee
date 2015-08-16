@@ -28,7 +28,10 @@ getClosedPullRequestsAfter = (time) ->
     else
       pullRequests = JSON.parse(body).filter (pullRequest) ->
         new Date(pullRequest.merged_at) > time
-      printPullRequestsReport(pullRequests)
+      if pullRequests.length
+        printPullRequestsReport(pullRequests)
+      else
+        console.log 'No new pull requests be merged.'
 
 getLastedReleaseTime = new Promise (resolve, reject) ->
   callGithubAPI (repoUrl + LATEST_RELEASE_PATH),  (error, response, body) ->
@@ -36,7 +39,7 @@ getLastedReleaseTime = new Promise (resolve, reject) ->
       reject error
     else
       lastedReleaseTime = new Date(JSON.parse(body).created_at)
-      console.log lastedReleaseTime
+      console.log "Last release time is #{lastedReleaseTime.toLocaleTimeString()} #{lastedReleaseTime.toLocaleDateString()}"
       resolve(lastedReleaseTime)
 
 printPullRequestsReport = (pullRequests) ->
