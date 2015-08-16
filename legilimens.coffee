@@ -1,13 +1,16 @@
 request = require('request')
+fs = require('fs')
+
+config = JSON.parse(fs.readFileSync('.config.json','utf8'))
 
 GITHUB_REPO_API_ROOT = "https://api.github.com/repos/"
 LATEST_RELEASE_PATH = "/releases/latest"
 RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc"
 
-username = 'yourname'
-password = 'password'
-repoOwner = 'repo/owner'
-repoName = 'reponame'
+username = config.username
+password = config.password
+repoOwner = config.repo_owner
+repoName = config.repo_name
 
 repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoOwner}/#{repoName}"
 
