@@ -1,6 +1,6 @@
 request = require('request')
 
-GITHUB_API_ROOT = "https://api.github.com/repos/"
+GITHUB_REPO_API_ROOT = "https://api.github.com/repos/"
 LATEST_RELEASE_PATH = "/releases/latest"
 RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc"
 
@@ -9,17 +9,20 @@ password = 'password'
 repoOwner = 'repo/owner'
 repoName = 'reponame'
 
-repoUrl = "#{GITHUB_API_ROOT}#{repoOwner}/#{repoName}"
+repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoOwner}/#{repoName}"
 
-getClosedPullRequestsAfter = (time) ->
+callGithubAPI = (url, callback = (error, response, body) -> {}) ->
   request
-    url: repoUrl + RECENT_CLOSED_PR_PATH
+    url: url
     headers:
      'User-Agent': 'request'
     auth:
       user: username
       password: password
-  ,  (error, response, body) ->
+  , callback
+
+getClosedPullRequestsAfter = (time) ->
+  callGithubAPI (repoUrl + RECENT_CLOSED_PR_PATH), (error, response, body) ->
     if (!error and response.statusCode isnt 200)
       console.log error, body
     else
@@ -28,14 +31,7 @@ getClosedPullRequestsAfter = (time) ->
       printPullRequestsReport(pullRequests)
 
 getLastedReleaseTime = (callback) ->
-  request
-    url: repoUrl + LATEST_RELEASE_PATH
-    headers:
-     'User-Agent': 'request'
-    auth:
-      user: username
-      password: password
-  ,  (error, response, body) ->
+  callGithubAPI (repoUrl + LATEST_RELEASE_PATH),  (error, response, body) ->
     if (!error and response.statusCode isnt 200)
       console.log error, body
     else
@@ -50,5 +46,3 @@ printPullRequestsReport = (pullRequests) ->
     index++
 
 getLastedReleaseTime(getClosedPullRequestsAfter)
-
-
