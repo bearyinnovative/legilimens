@@ -28,13 +28,17 @@ getLastedReleaseTime = new Promise (resolve, reject) ->
   callGithubAPI
     url: repoUrl + LATEST_RELEASE_PATH
     callback: (error, response, body) ->
-      if (!error and response.statusCode isnt 200)
-        console.log error, body
-        reject error
-      else
-        lastedReleaseTime = new Date(JSON.parse(body).created_at)
-        console.log "Last release time is #{lastedReleaseTime.toLocaleTimeString()} #{lastedReleaseTime.toLocaleDateString()}"
-        resolve(lastedReleaseTime)
+      switch response.statusCode
+        when 200
+          lastedReleaseTime = new Date(JSON.parse(body).created_at)
+          console.log "Last release time is #{lastedReleaseTime.toLocaleTimeString()} #{lastedReleaseTime.toLocaleDateString()}\n"
+          resolve(lastedReleaseTime)
+        when 404
+          console.log "No releases before"
+          resolve(new Date(1970,1,1))
+        else
+          console.log error, body, response.statusCode
+          reject error
 
 getClosedPullRequestsAfter = (time) ->
   callGithubAPI
