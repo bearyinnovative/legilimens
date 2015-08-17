@@ -1,6 +1,22 @@
 # Intro
 
-Generate pull requests report for GitHub release. It design for Pull Request Workflow
+Generate a pull requests report for GitHub release. like
+
+```
+Last release time is 8/14/2015 6:46:52 PM
+
+New merged pull requests:
+1. #1737 refactor(favicon): do not use querySelector by @L42y
+2. #1736 fix search icon margin problem by @loddit
+3. #1735 fix: channel switching shortcuts by @L42y
+4. #1734 fix: cleanup NW leftover by @L42y
+5. #1731 fix: scale image proportionally to fit in screen by @L42y
+6. #1721 Snippet ext close #1705 by @loddit
+
+```
+
+It design for Pull Request Workflow
+
 
 ```
           +----------------------------------------------------+
@@ -43,14 +59,6 @@ Legilimens help you generate release report with pull requests info
   `coffee legilimens.coffee`
 
    Result
-
-```
-Last release time is 6:46:52 PM 8/14/2015
-
-1. fix: scale image proportionally to fit in screen by @L42y
-2. Snippet ext close #1705 by @loddit
-
-```
 
 # Legilimens
 
