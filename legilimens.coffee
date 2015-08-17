@@ -55,9 +55,10 @@ getClosedPullRequestsAfter = (time) ->
 
 printPullRequestsReport = (pullRequests) ->
   console.log "New merged pull requests:"
+  index = 1
   pullRequests.forEach (pullRequest) ->
-    mergedAt = new Date(pullRequest.merged_at)
-    console.log "##{pullRequest.number} #{pullRequest.title} by @#{pullRequest.user.login} (merged at #{mergedAt.toLocaleDateString()} #{mergedAt.toLocaleTimeString()})"
+    console.log "#{index}. ##{pullRequest.number} #{pullRequest.title} by @#{pullRequest.user.login}"
+    index++
 
 getLastedReleaseTime.then (lastedReleaseTime) ->
   getClosedPullRequestsAfter(lastedReleaseTime)
