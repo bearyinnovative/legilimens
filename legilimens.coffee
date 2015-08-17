@@ -31,7 +31,7 @@ getLastedReleaseTime = new Promise (resolve, reject) ->
       switch response.statusCode
         when 200
           lastedReleaseTime = new Date(JSON.parse(body).created_at)
-          console.log "Last release time is #{lastedReleaseTime.toLocaleTimeString()} #{lastedReleaseTime.toLocaleDateString()}\n"
+          console.log "Last release time is #{lastedReleaseTime.toLocaleDateString()} #{lastedReleaseTime.toLocaleTimeString()}\n"
           resolve(lastedReleaseTime)
         when 404
           console.log "No releases before"
@@ -56,10 +56,9 @@ getClosedPullRequestsAfter = (time) ->
 
 printPullRequestsReport = (pullRequests) ->
   console.log "New merged pull requests:"
-  index = 1
   pullRequests.forEach (pullRequest) ->
-    console.log "#{index}. #{pullRequest.title} by @#{pullRequest.user.login}"
-    index++
+    mergedAt = new Date(pullRequest.merged_at)
+    console.log "##{pullRequest.number} #{pullRequest.title} by @#{pullRequest.user.login} (merged at #{mergedAt.toLocaleDateString()} #{mergedAt.toLocaleTimeString()})"
 
 getLastedReleaseTime.then (lastedReleaseTime) ->
   getClosedPullRequestsAfter(lastedReleaseTime)
