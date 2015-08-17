@@ -32,8 +32,7 @@ Legilimens help you generate release report with pull requests info
   {
     "username": // your github login name
     "password": // your github password
-    "repo_owner": // repo owner e.g. github
-    "repo_name": // repo name e.g. hubot
+    "repo_path": // as github/hubut in https://github.com/github/hubot
   }
   ```
 

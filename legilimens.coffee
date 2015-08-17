@@ -9,10 +9,9 @@ RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc"
 
 username = config.username
 password = config.password
-repoOwner = config.repo_owner
-repoName = config.repo_name
+repoPath = config.repo_path
 
-repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoOwner}/#{repoName}"
+repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoPath}"
 
 callGithubAPI = ({url, callback}) ->
   request
