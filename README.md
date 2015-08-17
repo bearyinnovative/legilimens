@@ -1,4 +1,4 @@
-# Legilimens
+# Intro
 
 Generate pull requests report for GitHub release. It design for Pull Request Workflow
 
@@ -42,6 +42,18 @@ Legilimens help you generate release report with pull requests info
 
 3. Run Script
   `coffee legilimens.coffee`
+
+   Result
+
+```
+Last release time is 6:46:52 PM 8/14/2015
+
+1. fix: scale image proportionally to fit in screen by @L42y
+2. Snippet ext close #1705 by @loddit
+
+```
+
+# Legilimens
 
 In Harry Potter`s Magic World, Legilimens is the spell used for the practice of Legilimency (OP24). Legilimens is presumably used non-verbally whenever someone uses the arts of Legilimency to obtain information. However, there may be subtler ways to do this.
 

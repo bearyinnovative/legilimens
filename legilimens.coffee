@@ -55,6 +55,7 @@ getClosedPullRequestsAfter = (time) ->
           console.log 'No new pull requests be merged.'
 
 printPullRequestsReport = (pullRequests) ->
+  console.log "New merged pull requests:"
   index = 1
   pullRequests.forEach (pullRequest) ->
     console.log "#{index}. #{pullRequest.title} by @#{pullRequest.user.login}"
