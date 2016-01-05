@@ -56,7 +56,7 @@ Legilimens help you generate release report with pull requests info
   `npm install`
 
 3. Run Script
-  `coffee legilimens.coffee`
+  `npm start`
 
    Result
 
