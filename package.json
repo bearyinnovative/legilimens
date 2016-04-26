@@ -5,6 +5,9 @@
     "type": "git",
     "url": "https://github.com/bearyinnovative/legilimens.git"
   },
+  "scripts": {
+    "start": "coffee legilimens.coffee"
+  },
   "dependencies": {
     "coffee-script": "^1.8.0",
     "request": "^2.60.0"
