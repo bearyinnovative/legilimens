@@ -10,6 +10,7 @@ RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc"
 username = config.username
 password = config.password
 repoPath = config.repo_path
+baseBranch = config.repo_branch or 'master'
 
 repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoPath}"
 
@@ -46,8 +47,11 @@ getClosedPullRequestsAfter = (time) ->
       if (!error and response.statusCode isnt 200)
         console.log error, body
       else
-        pullRequests = JSON.parse(body).filter (pullRequest) ->
-          new Date(pullRequest.merged_at) > time
+        pullRequests = JSON.parse(body)
+          .filter (pullRequest) ->
+            new Date(pullRequest.merged_at) > time
+          .filter (pullRequest) ->
+            pullRequest.base.ref is baseBranch
         if pullRequests.length
           printPullRequestsReport(pullRequests)
         else

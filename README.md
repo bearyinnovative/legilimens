@@ -49,6 +49,7 @@ Legilimens help you generate release report with pull requests info
     "username": // your github login name
     "password": // your github password
     "repo_path": // as github/hubut in https://github.com/github/hubot
+    "repo_branch": // prs' base branch, eg: `master`
   }
   ```
 
