@@ -10,9 +10,12 @@ RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc"
 username = config.username
 password = config.password
 repoPath = config.repo_path
-baseBranch = config.repo_branch or 'master'
+baseBranch = process.argv[2] or config.repo_branch or 'master'
+isHotfix = !!process.argv[2]
 
 repoUrl = "#{GITHUB_REPO_API_ROOT}#{repoPath}"
+
+
 
 callGithubAPI = ({url, callback}) ->
   request
@@ -31,7 +34,7 @@ getLastedReleaseTime = new Promise (resolve, reject) ->
       switch response.statusCode
         when 200
           createdAt = (JSON.parse(body).filter (release) =>
-            release.target_commitish is 'master' and !release.prerelease)[0]?.created_at
+            ((release.target_commitish is 'master') or isHotfix) and !release.prerelease)[0]?.created_at
           lastedReleaseTime = if createdAt then new Date(createdAt) else new Date(1970,1,1)
           console.log "Last release time is #{lastedReleaseTime.toLocaleDateString()} #{lastedReleaseTime.toLocaleTimeString()}\n"
           resolve(lastedReleaseTime)
@@ -50,10 +53,10 @@ getClosedPullRequestsAfter = (time) ->
         console.log error, body
       else
         pullRequests = JSON.parse(body)
-          .filter (pullRequest) ->
-            new Date(pullRequest.merged_at) > time
-          .filter (pullRequest) ->
-            pullRequest.base.ref is baseBranch
+         .filter (pullRequest) ->
+           new Date(pullRequest.merged_at) > time
+         .filter (pullRequest) ->
+           pullRequest.base.ref is baseBranch
         if pullRequests.length
           printPullRequestsReport(pullRequests)
         else
