@@ -61,6 +61,9 @@ Legilimens help you generate release report with pull requests info
 
    Result
 
+4. For Hofix
+  `npm start [hotfix-branch-name]`
+
 # Legilimens
 
 In Harry Potter`s Magic World, Legilimens is the spell used for the practice of Legilimency (OP24). Legilimens is presumably used non-verbally whenever someone uses the arts of Legilimency to obtain information. However, there may be subtler ways to do this.

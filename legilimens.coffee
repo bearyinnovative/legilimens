@@ -36,7 +36,6 @@ getLastedReleaseTime = new Promise (resolve, reject) ->
           createdAt = (JSON.parse(body).filter (release) =>
             ((release.target_commitish is 'master') or isHotfix) and !release.prerelease)[0]?.created_at
           lastedReleaseTime = if createdAt then new Date(createdAt) else new Date(1970,1,1)
-          console.log "Last release time is #{lastedReleaseTime.toLocaleDateString()} #{lastedReleaseTime.toLocaleTimeString()}\n"
           resolve(lastedReleaseTime)
         when 404
           console.log "No releases before"
