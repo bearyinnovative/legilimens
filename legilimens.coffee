@@ -4,7 +4,7 @@ fs = require('fs')
 config = JSON.parse(fs.readFileSync('.config.json','utf8'))
 
 GITHUB_REPO_API_ROOT = "https://api.github.com/repos/"
-LATEST_RELEASE_PATH = "/releases/latest"
+RELEASES_PATH = "/releases"
 RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc"
 
 username = config.username
@@ -26,11 +26,13 @@ callGithubAPI = ({url, callback}) ->
 
 getLastedReleaseTime = new Promise (resolve, reject) ->
   callGithubAPI
-    url: repoUrl + LATEST_RELEASE_PATH
+    url: repoUrl + RELEASES_PATH
     callback: (error, response, body) ->
       switch response.statusCode
         when 200
-          lastedReleaseTime = new Date(JSON.parse(body).created_at)
+          createdAt = (JSON.parse(body).filter (release) =>
+            release.target_commitish is 'master' and !release.prerelease)[0]?.created_at
+          lastedReleaseTime = if createdAt then new Date(createdAt) else new Date(1970,1,1)
           console.log "Last release time is #{lastedReleaseTime.toLocaleDateString()} #{lastedReleaseTime.toLocaleTimeString()}\n"
           resolve(lastedReleaseTime)
         when 404
