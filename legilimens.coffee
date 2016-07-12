@@ -65,7 +65,7 @@ printPullRequestsReport = (pullRequests) ->
   console.log "New merged pull requests:"
   index = 1
   pullRequests.forEach (pullRequest) ->
-    console.log "#{index}. ##{pullRequest.number} #{pullRequest.title} by @#{pullRequest.user.login}"
+    console.log "- [] #{index}. ##{pullRequest.number} #{pullRequest.title} by @#{pullRequest.user.login}"
     index++
 
 getLastedReleaseTime.then (lastedReleaseTime) ->
