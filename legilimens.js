@@ -59,22 +59,23 @@ function getClosedPullRequestsAfter(time) {
         const pullRequests = JSON.parse(body)
          .filter(pullRequest => new Date(pullRequest.merged_at) > time).filter(pullRequest => pullRequest.base.ref === baseBranch);
         if (pullRequests.length) {
-          return printPullRequestsReport(pullRequests);
+          console.log(renderPullRequestsReport(pullRequests));
         } else {
-          return console.log('No new pull requests be merged.');
+          console.log('No new pull requests be merged.');
         }
       }
     }
   });
 }
 
-function printPullRequestsReport(pullRequests) {
-  console.log("New merged pull requests:");
+function renderPullRequestsReport(pullRequests) {
+  let output = '';
+  output += "New merged pull requests:";
   let index = 1;
-  return pullRequests.forEach(function(pullRequest) {
-    console.log(`- [ ] ${index}. #${pullRequest.number} ${pullRequest.title} by @${pullRequest.user.login}`);
-    return index++;
+  pullRequests.forEach(function(pullRequest) {
+    output += `\n- [ ] ${index}. #${pullRequest.number} ${pullRequest.title} by @${pullRequest.user.login}`;
   });
+  return output;
 };
 
 getLastedReleaseTime.then(lastedReleaseTime => getClosedPullRequestsAfter(lastedReleaseTime));
