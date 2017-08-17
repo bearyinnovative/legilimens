@@ -7,7 +7,7 @@ const GITHUB_REPO_API_ROOT = "https://api.github.com/repos/";
 const RELEASES_PATH = "/releases";
 const RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc";
 
-const { username, password } = config;
+const token = config.token;
 const repoPath = config.repo_path;
 const baseBranch = process.argv[2] || config.repo_branch || 'master';
 const isHotfix = !!process.argv[2];
@@ -18,12 +18,9 @@ function callGithubAPI({url, callback}) {
   request({
     url,
     headers: {
-     'User-Agent': 'request'
+     'User-Agent': 'request',
+     'Authorization': `token ${token}`
     },
-    auth: {
-      user: username,
-      password
-    }
   }, callback);
 }
 

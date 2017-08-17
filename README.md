@@ -46,8 +46,7 @@ Legilimens help you generate release report with pull requests info
 
   ```
   {
-    "username": // your github login name
-    "password": // your github password
+    "token": // your github access token, see https://github.com/settings/tokens
     "repo_path": // as github/hubut in https://github.com/github/hubot
     "repo_branch": // prs' base branch, eg: `master`
   }
