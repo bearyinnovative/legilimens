@@ -1,5 +1,5 @@
 const fs = require('fs');
-const {getLastedReleaseTime, getClosedPullRequestsAfter} = require('./legilimens.js');
+const legilimens = require('./legilimens.js');
 
 const config = JSON.parse(fs.readFileSync('.config.json','utf8'));
 
@@ -9,8 +9,7 @@ const baseBranch = process.argv[2] || config.repo_branch || 'master';
 const isHotfix = !!process.argv[2];
 
 
-getLastedReleaseTime(token, repoPath).then((lastedReleaseTime) => {
-  getClosedPullRequestsAfter(token, repoPath, lastedReleaseTime, baseBranch)
-});
 
-
+legilimens(token, repoPath, baseBranch, (output) => {
+  console.log(output);
+})

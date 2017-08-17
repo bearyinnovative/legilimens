@@ -40,7 +40,7 @@ function getLastedReleaseTime(token, repoPath) {
   });
 }
 
-function getClosedPullRequestsAfter(token, repoPath, time, baseBranch="master") {
+function getClosedPullRequestsAfter(token, repoPath, time, baseBranch="master", callback) {
   const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
   callGithubAPI({
     url: repoUrl + RECENT_CLOSED_PR_PATH,
@@ -52,7 +52,7 @@ function getClosedPullRequestsAfter(token, repoPath, time, baseBranch="master") 
         const pullRequests = JSON.parse(body)
          .filter(pullRequest => new Date(pullRequest.merged_at) > time)
          .filter(pullRequest => pullRequest.base.ref === baseBranch);
-        console.log(renderPullRequestsReport(pullRequests));
+        callback(renderPullRequestsReport(pullRequests));
       }
     }
   });
@@ -72,7 +72,9 @@ function renderPullRequestsReport(pullRequests) {
   return output;
 };
 
-module.exports = {
-  getClosedPullRequestsAfter,
-  getLastedReleaseTime
-};
+
+module.exports = (token, repoPath, baseBranch, callback) => {
+  getLastedReleaseTime(token, repoPath).then((lastedReleaseTime) => {
+    getClosedPullRequestsAfter(token, repoPath, lastedReleaseTime, baseBranch, callback);
+  });
+}

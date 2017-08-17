@@ -38,7 +38,7 @@ It benefits us quite a lot in these case:
 Legilimens help you generate release report with pull requests info
 
 
-## Usage
+## Command Usage
 
 1. Edit a config file in legilimens`s repo folder to setup GitHub account and repo
 
@@ -62,6 +62,18 @@ Legilimens help you generate release report with pull requests info
 
 4. For Hofix
   `npm start [hotfix-branch-name]`
+
+## Library Usage
+
+```js
+const legilimens = require('legilimens');
+
+legilimens(token, repoPath, baseBranch, function(output) {
+  ...
+  your code here(use output)
+  ...
+});
+```
 
 # Legilimens
 
