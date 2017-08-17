@@ -17,7 +17,7 @@ function callGithubAPI({url, token=null, callback}) {
   }, callback);
 }
 
-function getLastedReleaseTime(token, repoPath) {
+function getLastedReleaseTime(token, repoPath, baseBranch="master") {
   const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
   return new Promise((resolve, reject) => {
     callGithubAPI({
@@ -27,7 +27,7 @@ function getLastedReleaseTime(token, repoPath) {
         switch (response.statusCode) {
           case 200:
             const lastedRelease = JSON.parse(body).filter(release => {
-              return ((release.target_commitish === 'master') || isHotfix) && !release.prerelease;
+              return release.target_commitish === baseBranch && !release.prerelease;
             })[0];
             const lastedReleaseTime = lastedRelease ? new Date(lastedRelease.created_at) : new Date(1970,1,1);
             return resolve(lastedReleaseTime);
@@ -77,7 +77,7 @@ function renderPullRequestsReport(pullRequests) {
 
 
 module.exports = (token, repoPath, baseBranch, callback) => {
-  getLastedReleaseTime(token, repoPath).then((lastedReleaseTime) => {
+  getLastedReleaseTime(token, repoPath, baseBranch).then((lastedReleaseTime) => {
     getClosedPullRequestsAfter(token, repoPath, lastedReleaseTime, baseBranch, callback);
   });
 }
