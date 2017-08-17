@@ -1,7 +1,4 @@
 const request = require('request');
-const fs = require('fs');
-
-const config = JSON.parse(fs.readFileSync('.config.json','utf8'));
 
 const GITHUB_REPO_API_ROOT = "https://api.github.com/repos/";
 const RELEASES_PATH = "/releases";
@@ -17,7 +14,8 @@ function callGithubAPI({url, token, callback}) {
   }, callback);
 }
 
-function getLastedReleaseTime(token, repoUrl) {
+function getLastedReleaseTime(token, repoPath) {
+  const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
   return new Promise((resolve, reject) => {
     callGithubAPI({
       url: repoUrl + RELEASES_PATH,
@@ -42,7 +40,8 @@ function getLastedReleaseTime(token, repoUrl) {
   });
 }
 
-function getClosedPullRequestsAfter(token, repoUrl, time, baseBranch="master") {
+function getClosedPullRequestsAfter(token, repoPath, time, baseBranch="master") {
+  const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
   callGithubAPI({
     url: repoUrl + RECENT_CLOSED_PR_PATH,
     token: token,
@@ -53,11 +52,7 @@ function getClosedPullRequestsAfter(token, repoUrl, time, baseBranch="master") {
         const pullRequests = JSON.parse(body)
          .filter(pullRequest => new Date(pullRequest.merged_at) > time)
          .filter(pullRequest => pullRequest.base.ref === baseBranch);
-        if (pullRequests.length) {
-          console.log(renderPullRequestsReport(pullRequests));
-        } else {
-          console.log('No new pull requests be merged.');
-        }
+        console.log(renderPullRequestsReport(pullRequests));
       }
     }
   });
@@ -65,22 +60,19 @@ function getClosedPullRequestsAfter(token, repoUrl, time, baseBranch="master") {
 
 function renderPullRequestsReport(pullRequests) {
   let output = '';
-  output += "New merged pull requests:";
-  let index = 1;
-  pullRequests.forEach(function(pullRequest) {
-    output += `\n- [ ] ${index}. #${pullRequest.number} ${pullRequest.title} by @${pullRequest.user.login}`;
-  });
+  if (pullRequests.length) {
+    output += "New merged pull requests:";
+    let index = 1;
+    pullRequests.forEach(function(pullRequest) {
+      output += `\n- [ ] ${index}. #${pullRequest.number} ${pullRequest.title} by @${pullRequest.user.login}`;
+    });
+  } else {
+    output += 'No new pull requests be merged.';
+  }
   return output;
 };
 
-const token = config.token;
-const repoPath = config.repo_path;
-const baseBranch = process.argv[2] || config.repo_branch || 'master';
-const isHotfix = !!process.argv[2];
-
-const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
-
-
-getLastedReleaseTime(token, repoUrl).then((lastedReleaseTime) => {
-  getClosedPullRequestsAfter(token, repoUrl, lastedReleaseTime, baseBranch)
-});
+module.exports = {
+  getClosedPullRequestsAfter,
+  getLastedReleaseTime
+};
