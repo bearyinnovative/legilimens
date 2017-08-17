@@ -4,13 +4,16 @@ const GITHUB_REPO_API_ROOT = "https://api.github.com/repos/";
 const RELEASES_PATH = "/releases";
 const RECENT_CLOSED_PR_PATH = "/pulls?state=closed&sort=updated&direction=desc";
 
-function callGithubAPI({url, token, callback}) {
+function callGithubAPI({url, token=null, callback}) {
+  const headers = {
+   'User-Agent': 'legilimens',
+  };
+  if (token) {
+   headers['Authorization'] = `token ${token}`;
+  }
   request({
     url,
-    headers: {
-     'User-Agent': 'request',
-     'Authorization': `token ${token}`
-    },
+    headers,
   }, callback);
 }
 
