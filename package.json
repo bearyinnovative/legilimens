@@ -6,10 +6,12 @@
     "url": "https://github.com/bearyinnovative/legilimens.git"
   },
   "scripts": {
-    "start": "node legilimens.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "coffee-script": "^1.8.0",
+    "inquirer": "^3.2.2",
     "request": "^2.60.0"
-  }
+  },
+  "main": "./legilimens.js"
 }

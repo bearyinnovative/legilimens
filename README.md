@@ -38,23 +38,23 @@ It benefits us quite a lot in these case:
 Legilimens help you generate release report with pull requests info
 
 
-## Usage
+## Command Usage
 
-1. Edit a config file in legilimens`s repo folder to setup GitHub account and repo
+1. Install packages
+  `npm install`
+
+2. Edit a config file in legilimens`s repo folder to setup GitHub account and repo
 
   `.config.json`
 
   ```
   {
-    "username": // your github login name
-    "password": // your github password
+    "token": // your github access token, see https://github.com/settings/tokens not needed for public repo
     "repo_path": // as github/hubut in https://github.com/github/hubot
     "repo_branch": // prs' base branch, eg: `master`
   }
   ```
-
-2. Install packages
-  `npm install`
+  (Optinal, otherwise you need answer some interactive command questions later)
 
 3. Run Script
   `npm start`
@@ -63,6 +63,18 @@ Legilimens help you generate release report with pull requests info
 
 4. For Hofix
   `npm start [hotfix-branch-name]`
+
+## Library Usage
+
+```js
+const legilimens = require('legilimens');
+
+legilimens(token, repoPath, baseBranch, function(output) {
+  ...
+  your code here(use output)
+  ...
+});
+```
 
 # Legilimens
 
