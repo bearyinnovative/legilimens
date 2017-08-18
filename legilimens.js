@@ -68,6 +68,7 @@ function renderPullRequestsReport(pullRequests) {
     let index = 1;
     pullRequests.forEach(function(pullRequest) {
       output += `\n- [ ] ${index}. #${pullRequest.number} ${pullRequest.title} by @${pullRequest.user.login}`;
+      index++;
     });
   } else {
     output += 'No new pull requests be merged.';
