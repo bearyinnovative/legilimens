@@ -17,7 +17,7 @@ function callGithubAPI({url, token=null, callback}) {
   }, callback);
 }
 
-function getLastedReleaseTime(token, repoPath, baseBranch="master") {
+function getLastedRelease(token, repoPath, baseBranch="master") {
   const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
   return new Promise((resolve, reject) => {
     callGithubAPI({
@@ -29,11 +29,10 @@ function getLastedReleaseTime(token, repoPath, baseBranch="master") {
             const lastedRelease = JSON.parse(body).filter(release => {
               return release.target_commitish === baseBranch && !release.prerelease;
             })[0];
-            const lastedReleaseTime = lastedRelease ? new Date(lastedRelease.created_at) : new Date(1970,1,1);
-            return resolve(lastedReleaseTime);
+            return resolve(lastedRelease);
           case 404:
             console.log("No releases before");
-            return resolve(new Date(1970,1,1));
+            return resolve(null);
           default:
             console.log(error, body, response.statusCode);
             return reject(error);
@@ -43,8 +42,9 @@ function getLastedReleaseTime(token, repoPath, baseBranch="master") {
   });
 }
 
-function getClosedPullRequestsAfter(token, repoPath, time, baseBranch="master", callback) {
+function getClosedPullRequestsAfter(token, repoPath, lastedRelease, baseBranch="master", callback) {
   const repoUrl = `${GITHUB_REPO_API_ROOT}${repoPath}`;
+  const lastedReleaseTime = lastedRelease ? new Date(lastedRelease.created_at) : new Date(1970,1,1);
   callGithubAPI({
     url: repoUrl + RECENT_CLOSED_PR_PATH,
     token: token,
@@ -53,32 +53,32 @@ function getClosedPullRequestsAfter(token, repoPath, time, baseBranch="master", 
         return console.log(error, body);
       } else {
         const pullRequests = JSON.parse(body)
-         .filter(pullRequest => new Date(pullRequest.merged_at) > time)
+         .filter(pullRequest => new Date(pullRequest.merged_at) > lastedReleaseTime)
          .filter(pullRequest => pullRequest.base.ref === baseBranch);
-        callback(renderPullRequestsReport(pullRequests));
+        callback(renderPullRequestsReport(pullRequests, lastedRelease));
       }
     }
   });
 }
 
-function renderPullRequestsReport(pullRequests) {
+function renderPullRequestsReport(pullRequests, lastedRelease) {
   let output = '';
   if (pullRequests.length) {
-    output += "New merged pull requests:";
+    output += `New merged pull requests after last release: [${lastedRelease.tag_name}](${lastedRelease.html_url})`;
     let index = 1;
     pullRequests.forEach(function(pullRequest) {
       output += `\n- [ ] ${index}. #${pullRequest.number} ${pullRequest.title} by @${pullRequest.user.login}`;
       index++;
     });
   } else {
-    output += 'No new pull requests be merged.';
+    output += `No new pull requests be merged after last release: [${lastedRelease.tag_name}](${lastedRelease.html_url})`;
   }
   return output;
 };
 
 
 module.exports = (token, repoPath, baseBranch, callback) => {
-  getLastedReleaseTime(token, repoPath, baseBranch).then((lastedReleaseTime) => {
-    getClosedPullRequestsAfter(token, repoPath, lastedReleaseTime, baseBranch, callback);
+  getLastedRelease(token, repoPath, baseBranch).then((lastedRelease) => {
+    getClosedPullRequestsAfter(token, repoPath, lastedRelease, baseBranch, callback);
   });
 }
