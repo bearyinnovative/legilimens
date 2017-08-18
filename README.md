@@ -40,7 +40,10 @@ Legilimens help you generate release report with pull requests info
 
 ## Command Usage
 
-1. Edit a config file in legilimens`s repo folder to setup GitHub account and repo
+1. Install packages
+  `npm install`
+
+2. Edit a config file in legilimens`s repo folder to setup GitHub account and repo
 
   `.config.json`
 
@@ -51,9 +54,7 @@ Legilimens help you generate release report with pull requests info
     "repo_branch": // prs' base branch, eg: `master`
   }
   ```
-
-2. Install packages
-  `npm install`
+  (Optinal, otherwise you need answer some interactive command questions later)
 
 3. Run Script
   `npm start`
